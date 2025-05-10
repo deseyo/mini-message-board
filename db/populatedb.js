@@ -26,20 +26,14 @@ const values = [
   'Bob', 'Hello world 3', nowDate
 ];
 
-console.log(process.env.DB_HOST);
-console.log(process.env.DB_USER);
-console.log(process.env.DB_DATABASE);
-console.log(process.env.DB_PASSWORD);
-console.log(typeof process.env.DB_PORT);
+const isProduction = process.env.NODE_ENV === 'production';
+const connectionString = process.env.DATABASE_URL;
 
 const main = async () => {
   console.log('seeding...');
   const client = new Client({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    database: process.env.DB_DATABASE,
-    password: process.env.DB_PASSWORD,
-    port: parseInt(process.env.DB_PORT)
+    connectionString,
+    ssl: isProduction ? { rejectUnauthorized: false } : false
   });
   await client.connect();
   await client.query(SQL);
